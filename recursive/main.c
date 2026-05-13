@@ -3,7 +3,6 @@
 void findCandidate(int *A, int N, int i, int *candidate, int *count)
 {
     if (i == N) return;
-
     if (*count == 0) {
         *candidate = A[i];
         *count = 1;
@@ -12,7 +11,6 @@ void findCandidate(int *A, int N, int i, int *candidate, int *count)
     } else {
         (*count)--;
     }
-
     findCandidate(A, N, i + 1, candidate, count);
 }
 

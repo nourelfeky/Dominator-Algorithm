@@ -6,39 +6,20 @@ void dominator(int *A, int N)
         printf("No dominator (empty array)\n");
         return;
     }
-
-    int candidate = A[0];
-    int count = 1;
-
-    for (int i = 1; i < N; i++) {
-        if (count == 0) {
-            candidate = A[i];
-            count = 1;
-        } else if (A[i] == candidate) {
-            count++;
-        } else {
-            count--;
+    for(int i=0;i<N;i++){
+        int candidate = A[i]; //1 2 3 3 3 3 4 6 3
+        int count = 0;
+        for(int j=0 ; j<N ;j++){
+            if(candidate==A[j]){
+                count++;
+            }
+        }
+        if (count > N/2){
+             printf("Dominator = %d, found at index %d\n", candidate, i);
+             return ;
         }
     }
-
-    int freq = 0;
-    for (int i = 0; i < N; i++) {
-        if (A[i] == candidate)
-            freq++;
-    }
-
-    if (freq <= N / 2) {
-        printf("No dominator found.\n");
-        return;
-    }
-
-
-    for (int i = 0; i < N; i++) {
-        if (A[i] == candidate) {
-            printf("Dominator = %d, found at index %d\n", candidate, i);
-            return;
-        }
-    }
+     printf("No dominator found.\n");
 }
 
 int main()
