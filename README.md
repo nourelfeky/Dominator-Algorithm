@@ -29,7 +29,8 @@ The **dominator** (majority element) is a value `x` that appears in the array **
 | Directory | Description |
 |-----------|-------------|
 | `recursive/` | **Recursive** solution in two phases: pick a candidate, then verify its frequency. |
-| `non-reccursive/` | **Non-recursive** **brute-force** solution using nested loops. |
+| `non-reccursive v1/` | **Non-recursive** **brute-force** solution using nested loops (equivalent to the former `non-reccursive/` layout). |
+| `non-reccursive v2/` | **Non-recursive** **O(N)** solution using the **Boyer–Moore majority vote** idea: one pass for a candidate, then verify frequency and print the first index. |
 
 Each version reads `N` and the array elements from standard input, then calls `dominator`.
 
@@ -55,12 +56,21 @@ Each version reads `N` and the array elements from standard input, then calls `d
 
 Idea: a **Boyer–Moore–style** candidate phase, then a **verification** pass over the full array.
 
-### Non-recursive version (`non-reccursive/main.c`)
+### Non-recursive v1 (`non-reccursive v1/main.c`)
 
 | | Complexity | Notes |
 |---|------------|--------|
 | **Time** | **O(N²)** | For each index `i`, the inner loop scans all `N` elements. |
 | **Space** | **O(1)** | Only a few local counters; no recursion stack proportional to `N`. |
+
+### Non-recursive v2 (`non-reccursive v2/main.c`)
+
+| | Complexity | Notes |
+|---|------------|--------|
+| **Time** | **O(N)** | One pass to maintain a candidate and balance count, one pass to count occurrences of that candidate, one pass to find the first index. |
+| **Space** | **O(1)** | Iterative; only a small number of scalar variables besides the input array. |
+
+Same algorithmic idea as the recursive candidate phase, implemented with loops instead of recursion.
 
 ---
 
@@ -108,7 +118,7 @@ function DOMINATOR(A, N):
     print candidate, index
 ```
 
-### 2) Non-recursive (direct search)
+### 2) Non-recursive v1 (direct search)
 
 ```
 function DOMINATOR(A, N):
@@ -127,6 +137,30 @@ function DOMINATOR(A, N):
     print "No dominator found."
 ```
 
+### 3) Non-recursive v2 (Boyer–Moore majority vote, iterative)
+
+```
+function DOMINATOR(A, N):
+    if N == 0:
+        print "No dominator (empty array)"
+        return
+    candidate ← A[0]
+    count ← 1
+    for i from 1 to N - 1:
+        if count == 0:
+            candidate ← A[i]
+            count ← 1
+        else if A[i] == candidate:
+            count ← count + 1
+        else:
+            count ← count - 1
+    freq ← number of indices j where A[j] == candidate
+    if freq ≤ floor(N / 2):
+        print "No dominator found."
+        return
+    find smallest index i where A[i] == candidate and print candidate, i
+```
+
 ---
 
 ## Build and Run
@@ -137,8 +171,11 @@ The project includes **Code::Blocks** project files (`.cbp`). You can also compi
 # Recursive
 gcc -o dominator_recursive recursive/main.c
 
-# Non-recursive
-gcc -o dominator_iterative non-reccursive/main.c
+# Non-recursive v1 (brute force)
+gcc -o dominator_iterative_v1 "non-reccursive v1/main.c"
+
+# Non-recursive v2 (Boyer–Moore iterative)
+gcc -o dominator_iterative_v2 "non-reccursive v2/main.c"
 ```
 
 Run the executable and enter `N`, then the `N` elements when prompted.
@@ -152,5 +189,4 @@ The value `3` appears 4 times, and `4 > 6 / 2`, so **`3` is the dominator**.
 
 ## References
 
-- [Boyer–Moore majority vote algorithm](https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm) — related idea to the candidate phase in the recursive solution.
->>>>>>> 19f23e0 (version 2)
+- [Boyer–Moore majority vote algorithm](https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm) — related idea to the candidate phase in the **recursive** solution and the **non-recursive v2** solution.
